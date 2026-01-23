@@ -1,15 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --bg-primary: #050505;
-  --bg-secondary: #0a0a0a;
+  --bg-primary: #020202;
+  --bg-secondary: #050505;
   --text-primary: #ffffff;
-  --text-secondary: #a1a1aa;
-  --accent-primary: #3b82f6;
-  --accent-secondary: #60a5fa;
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.1);
+  --text-secondary: #94a3b8;
+  --accent-primary: #10b981;
+  --accent-secondary: #34d399;
+  --accent-glow: rgba(16, 185, 129, 0.4);
+  --glass-bg: rgba(0, 0, 0, 0.5);
+  --glass-border: rgba(16, 185, 129, 0.2);
   --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
 * {

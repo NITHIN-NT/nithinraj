@@ -1,54 +1,69 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import TechStack from './components/TechStack';
 import Contact from './components/Contact';
 import ReadingText from './components/ReadingText';
+import LoadingScreen from './components/LoadingScreen';
+import Terminal from './components/Terminal';
+import BackgroundElements from './components/BackgroundElements';
+import { AnimatePresence } from 'framer-motion';
 import './App.css';
 
 const About = () => (
-  <section id="about">
-    <h2 className="section-title">Professional Profile</h2>
-    <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1fr)', gap: '4rem' }}>
-      <div style={{ lineHeight: '1.8', color: 'var(--text-secondary)' }}>
-        <p style={{ marginBottom: '1.5rem', fontSize: '1.2rem', fontWeight: 500 }}>
-          <ReadingText text="I am Nithin Raj NT, a visionary Full Stack Architect based in Malappuram, Kerala. I specialize in building complex, high-performance web systems using Django and React." />
-        </p>
-        <p style={{ fontSize: '1.2rem', fontWeight: 500 }}>
-          <ReadingText text="Currently at Brototype Malayalam, I'm mastering the art of scalable software engineering. My approach combines deep technical expertise with a sharp eye for modern UI/UX and 3D interactivity." />
-        </p>
+  <section id="about" style={{ background: '#020202' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '4rem' }}>
+        <div style={{ fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)', fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '1rem' }}>
+          [ 02 // BIO_MANIFEST ]
+        </div>
+        <h2 className="section-title" style={{ textAlign: 'left', margin: 0, textTransform: 'uppercase' }}>Professional Profile</h2>
       </div>
-      <div className="glass" style={{ padding: '2.5rem', borderLeft: '4px solid var(--accent-primary)' }}>
-        <h3 style={{ marginBottom: '1.5rem', fontSize: '1.5rem' }}>Core Specialization</h3>
-        <ul style={{ listStyle: 'none', color: 'var(--text-secondary)' }}>
-          <li style={{ marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span style={{ color: 'var(--accent-primary)' }}>✔</span> Advanced Django & REST
-          </li>
-          <li style={{ marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span style={{ color: 'var(--accent-primary)' }}>✔</span> React & 3D Web (Three.js)
-          </li>
-          <li style={{ marginBottom: '1.2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span style={{ color: 'var(--accent-primary)' }}>✔</span> AWS & Docker Orchestration
-          </li>
-        </ul>
+      <div className="about-grid" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 500px)', gap: '6rem' }}>
+        <div style={{ lineHeight: '2', color: 'var(--text-secondary)', fontSize: '1.1rem' }}>
+          <p style={{ marginBottom: '2rem' }}>
+            <ReadingText text="I am Nithin NT, a Senior Backend Architect specializing in high-performance digital infrastructures. Based in South India, I transform complex requirements into resilient, scalable, and secure system architectures." />
+          </p>
+          <p>
+            <ReadingText text="Currently at Brototype, I'm engineering massive-scale software solutions using Python/Django and React. My design philosophy balances raw technical precision with high-impact visual aesthetics." />
+          </p>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <h3 style={{ fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--accent-primary)', textTransform: 'uppercase', letterSpacing: '0.25em', opacity: 0.6 }}>// SYSTEM_OVERSIGHT_ACTIVE</h3>
+          <div style={{ padding: '2rem', border: '1px solid var(--glass-border)', background: 'rgba(16, 185, 129, 0.02)', borderRadius: '4px' }}>
+            <p style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)' }}>
+              Floating Terminal deployed. Drag the header to reposition. Use the red control to minimize.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 );
 
 function App() {
+  const [loading, setLoading] = useState(true);
+
   return (
     <div className="app">
-      <Navbar />
-      <Hero />
-      <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, var(--glass-border), transparent)' }} />
-      <TechStack />
-      <About />
-      <Contact />
+      <AnimatePresence>
+        {loading && <LoadingScreen onFinish={() => setLoading(false)} />}
+      </AnimatePresence>
 
-      <footer style={{ padding: '4rem 3rem', textAlign: 'center', borderTop: '1px solid var(--glass-border)', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-        © {new Date().getFullYear()} Nithin Raj NT. Engineered with Precision.
-      </footer>
+      {!loading && (
+        <div className="content-reveal">
+          <BackgroundElements />
+          <Navbar />
+          <Hero />
+          <TechStack />
+          <About />
+          <Contact />
+          <Terminal />
+          <footer style={{ padding: '6rem 3rem', textAlign: 'center', borderTop: '1px solid var(--glass-border)', color: 'var(--text-secondary)', fontSize: '0.65rem', fontFamily: 'var(--font-mono)', letterSpacing: '0.2em' }}>
+            [ SYSTEM_END // © {new Date().getFullYear()} NITHIN NT // ARCHITECTING_FUTURES ]
+          </footer>
+        </div>
+      )}
     </div>
   );
 }

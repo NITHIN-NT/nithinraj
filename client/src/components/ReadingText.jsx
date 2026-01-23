@@ -10,15 +10,18 @@ const ReadingText = ({ text }) => {
                 <motion.span
                     key={index}
                     whileHover={{
-                        color: "#3b82f6",
-                        scale: 1.4,
-                        textShadow: "0 0 8px rgba(59, 130, 246, 0.8)",
-                        transition: { duration: 0.1 }
+                        color: "#10b981",
+                        scale: 1.2,
+                        x: [0, -2, 2, -2, 0],
+                        y: [0, 1, -1, 1, 0],
+                        textShadow: "0 0 12px rgba(16, 185, 129, 0.9), 0 0 20px rgba(16, 185, 129, 0.4)",
+                        transition: { duration: 0.2, repeat: Infinity }
                     }}
                     style={{
                         display: 'inline-block',
                         cursor: 'default',
-                        whiteSpace: char === " " ? "pre" : "normal"
+                        whiteSpace: char === " " ? "pre" : "normal",
+                        transition: "color 0.2s ease"
                     }}
                 >
                     {char}
