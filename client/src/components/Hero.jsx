@@ -1,243 +1,212 @@
-import React, { useRef, useMemo, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Stars, Float, PerspectiveCamera, MeshDistortMaterial } from '@react-three/drei';
-import { EffectComposer, Bloom, Noise, Vignette } from '@react-three/postprocessing';
+import { Float, PerspectiveCamera, MeshTransmissionMaterial, Environment, Text } from '@react-three/drei';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
 
 function Rig() {
     const { camera, mouse } = useThree();
     const vec = new THREE.Vector3();
+    const isMobile = window.innerWidth < 1000;
 
     return useFrame(() => {
-        camera.position.lerp(vec.set(mouse.x * 2, mouse.y * 1 + 6, 15), 0.05);
+        camera.position.lerp(vec.set(mouse.x * (isMobile ? 0.5 : 1.5), mouse.y * 1 + 2, isMobile ? 18 : 12), 0.05);
         camera.lookAt(0, 0, 0);
     });
 }
 
-function ScanningLine() {
-    const ref = useRef();
-    useFrame((state) => {
-        ref.current.position.y = Math.sin(state.clock.getElapsedTime() * 0.5) * 8;
-    });
-
-    return (
-        <mesh ref={ref} rotation={[Math.PI / 2, 0, 0]}>
-            <planeGeometry args={[40, 0.05]} />
-            <meshBasicMaterial color="#10b981" transparent opacity={0.1} />
-        </mesh>
-    );
-}
-
-function DataNode({ position, size = 1, color = "#10b981" }) {
+function GlassGeometry({ position, scale = 1, rotationSpeed = 0.5 }) {
     const mesh = useRef();
+
     useFrame((state) => {
-        const t = state.clock.getElapsedTime();
-        mesh.current.scale.setScalar(1 + Math.sin(t * 2) * 0.05);
-        mesh.current.rotation.y += 0.01;
+        mesh.current.rotation.x = state.clock.getElapsedTime() * rotationSpeed * 0.2;
+        mesh.current.rotation.y = state.clock.getElapsedTime() * rotationSpeed * 0.3;
     });
 
     return (
-        <mesh ref={mesh} position={position}>
-            <octahedronGeometry args={[size, 0]} />
-            <meshStandardMaterial color={color} wireframe emissive={color} emissiveIntensity={2} />
-        </mesh>
-    );
-}
-
-function DataGrid() {
-    const gridRef = useRef();
-    useFrame((state) => {
-        gridRef.current.rotation.z = state.clock.getElapsedTime() * 0.02;
-    });
-
-    return (
-        <group ref={gridRef} rotation={[-Math.PI / 2.5, 0, 0]}>
-            <gridHelper args={[60, 40, "#064e3b", "#022c22"]} />
-        </group>
-    );
-}
-
-function FloatingRing({ radius, color, speed }) {
-    const ref = useRef();
-    useFrame((state) => {
-        ref.current.rotation.z = state.clock.getElapsedTime() * speed;
-        ref.current.rotation.x = state.clock.getElapsedTime() * (speed * 0.5);
-    });
-
-    return (
-        <mesh ref={ref}>
-            <torusGeometry args={[radius, 0.005, 16, 120]} />
-            <meshBasicMaterial color={color} transparent opacity={0.3} />
-        </mesh>
-    );
-}
-
-function BackendVisual() {
-    return (
-        <group position={[0, 1, 0]}>
-            <ScanningLine />
-
-            {/* Central Holographic Core */}
-            <Float speed={2} rotationIntensity={2} floatIntensity={1}>
-                <mesh position={[0, 0, 0]}>
-                    <dodecahedronGeometry args={[2.5, 0]} />
-                    <MeshDistortMaterial
-                        color="#10b981"
-                        emissive="#10b981"
-                        emissiveIntensity={1.5}
-                        distort={0.4}
-                        speed={2}
-                        roughness={0}
-                        metalness={1}
-                        wireframe
-                    />
-                </mesh>
-                <mesh position={[0, 0, 0]}>
-                    <dodecahedronGeometry args={[2.4, 0]} />
-                    <meshBasicMaterial color="#059669" transparent opacity={0.15} />
-                </mesh>
-            </Float>
-
-            {/* Orbiting Service Nodes */}
-            <DataNode position={[-5, 3, -3]} size={0.6} color="#34d399" />
-            <DataNode position={[6, -1, -4]} size={1} color="#059669" />
-            <DataNode position={[3, 4, -2]} size={0.4} color="#6ee7b7" />
-            <DataNode position={[-4, -3, -2]} size={0.7} color="#10b981" />
-
-            <FloatingRing radius={6} color="#10b981" speed={0.15} />
-            <FloatingRing radius={10} color="#059669" speed={-0.08} />
-            <FloatingRing radius={14} color="#047857" speed={0.05} />
-
-            <DataGrid />
-        </group>
+        <Float speed={2} rotationIntensity={1} floatIntensity={2}>
+            <mesh ref={mesh} position={position} scale={scale}>
+                <octahedronGeometry args={[1, 0]} />
+                <MeshTransmissionMaterial
+                    backside
+                    samples={16}
+                    thickness={0.5}
+                    chromaticAberration={0.05}
+                    anisotropy={0.1}
+                    distortion={0.1}
+                    distortionScale={0.3}
+                    temporalDistortion={0.5}
+                    clearcoat={1}
+                    attenuationDistance={0.5}
+                    attenuationColor="#ffffff"
+                    color="#e0e7ff"
+                />
+            </mesh>
+        </Float>
     );
 }
 
 const Hero = () => {
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 1000);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 1000);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
-        <div id="home" className="hero">
+        <div id="home" className="hero" style={{ height: '100vh', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1 }}>
                 <Canvas dpr={[1, 2]}>
-                    <PerspectiveCamera makeDefault position={[0, 6, 15]} fov={45} />
+                    <PerspectiveCamera makeDefault position={[0, 2, isMobile ? 18 : 12]} fov={35} />
                     <Rig />
 
-                    <ambientLight intensity={0.1} />
-                    <pointLight position={[10, 10, 10]} intensity={2} color="#10b981" />
+                    <ambientLight intensity={0.5} />
+                    <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} color="#ffffff" castShadow />
+                    <pointLight position={[-10, -10, -10]} intensity={1} color="#3b82f6" />
 
-                    <BackendVisual />
-                    <Stars radius={120} depth={60} count={3000} factor={6} saturation={0} fade speed={1.5} />
+                    <GlassGeometry position={[0, 0, 0]} scale={isMobile ? 1.8 : 2.5} rotationSpeed={0.8} />
+                    <GlassGeometry position={[-4, 2, -2]} scale={1.2} rotationSpeed={1.2} />
+                    <GlassGeometry position={[5, -1, -3]} scale={1.5} rotationSpeed={0.6} />
+                    <GlassGeometry position={[-3, -3, -1]} scale={0.8} rotationSpeed={1.5} />
 
-                    <EffectComposer disableNormalPass>
-                        <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} height={300} intensity={1.5} />
-                        <Noise opacity={0.03} />
-                        <Vignette eskil={false} offset={0.1} darkness={1.1} />
+                    <Environment preset="city" />
+
+                    <EffectComposer>
+                        <Bloom luminanceThreshold={1} intensity={0.5} levels={9} mipmapBlur />
                     </EffectComposer>
 
-                    <fog attach="fog" args={["#020202", 10, 25]} />
+                    <fog attach="fog" args={["#ffffff", 5, 30]} />
                 </Canvas>
             </div>
 
             <motion.div
-                initial={{ opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1.5, delay: 0.5, ease: "easeOut" }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
                 className="hero-content"
-                style={{ position: 'relative', zIndex: 1 }}
+                style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    padding: '0 2rem',
+                    textAlign: 'center'
+                }}
             >
-                <div className="badge glass" style={{
-                    display: 'inline-block',
-                    padding: '0.6rem 2.5rem',
-                    marginBottom: '2.5rem',
-                    fontSize: '0.7rem',
-                    fontWeight: '800',
-                    color: 'var(--accent-primary)',
-                    borderRadius: '2px',
-                    border: '1px solid var(--accent-primary)',
-                    letterSpacing: '0.4em',
-                    textTransform: 'uppercase',
-                    background: 'rgba(16, 185, 129, 0.05)',
-                    boxShadow: '0 0 20px rgba(16, 185, 129, 0.1)'
-                }}>
-                    [ STATUS: OPTIMIZED_CORE ]
-                </div>
-                <h1 className="hero-title" style={{
-                    fontSize: 'clamp(4rem, 15vw, 10rem)',
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 }}
+                    style={{
+                        padding: isMobile ? '0.4rem 1.2rem' : '0.5rem 2rem',
+                        background: 'rgba(59, 130, 246, 0.05)',
+                        borderRadius: '100px',
+                        fontSize: isMobile ? '0.65rem' : '0.75rem',
+                        fontWeight: 700,
+                        color: 'var(--accent-primary)',
+                        marginBottom: '2rem',
+                        letterSpacing: '0.2em',
+                        border: '1px solid rgba(59, 130, 246, 0.1)'
+                    }}
+                >
+                    SYSTEM READY // V2.AETHER
+                </motion.div>
+
+                <h1 style={{
+                    fontSize: 'clamp(3rem, 12vw, 8rem)',
                     fontWeight: 900,
-                    textTransform: 'uppercase',
+                    color: 'var(--text-primary)',
                     lineHeight: 0.9,
-                    letterSpacing: '-0.05em',
-                    filter: 'drop-shadow(0 0 50px rgba(16, 185, 129, 0.4))'
+                    margin: 0
                 }}>
                     Nithin NT
                 </h1>
-                <p className="hero-subtitle" style={{
-                    margin: '2rem auto 0',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.9rem',
+
+                <p style={{
+                    marginTop: '1.5rem',
+                    fontSize: isMobile ? '0.75rem' : '1rem',
                     color: 'var(--text-secondary)',
-                    letterSpacing: '0.1em',
-                    maxWidth: '800px',
-                    lineHeight: '1.8'
+                    letterSpacing: isMobile ? '0.3em' : '0.5em',
+                    textTransform: 'uppercase',
+                    fontWeight: 500
                 }}>
-                    // SENIOR BACKEND ARCHITECT & SYSTEMS ENGINEER
-                    <br />
-                    // DESIGNING DISTRIBUTED INFRASTRUCTURES FOR THE FUTURE
+                    Architecture & Systems
                 </p>
-                <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', marginTop: '5rem' }}>
+
+                <div style={{
+                    display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
+                    gap: isMobile ? '1rem' : '1.5rem',
+                    marginTop: isMobile ? '3rem' : '4rem',
+                    width: isMobile ? '100%' : 'auto',
+                    maxWidth: isMobile ? '280px' : 'none'
+                }}>
                     <motion.a
-                        whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)' }}
+                        whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(59, 130, 246, 0.15)' }}
                         href="#work"
-                        className="submit-btn"
                         style={{
+                            padding: '1.2rem 3.5rem',
+                            borderRadius: '12px',
+                            fontWeight: 700,
                             background: 'var(--accent-primary)',
-                            color: '#000',
-                            padding: '1.4rem 4rem',
-                            borderRadius: '2px',
-                            fontWeight: '900',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.25em'
+                            color: '#fff',
+                            border: 'none',
+                            fontSize: '0.9rem',
+                            textAlign: 'center',
+                            textDecoration: 'none'
                         }}
                     >
-                        Initialize Core
+                        Explore Projects
                     </motion.a>
                     <motion.a
-                        whileHover={{ background: 'rgba(16, 185, 129, 0.1)', scale: 1.05 }}
+                        whileHover={{ y: -5, background: 'rgba(255,255,255,1)' }}
                         href="#contact"
-                        className="submit-btn"
                         style={{
-                            background: 'transparent',
-                            border: '1px solid var(--accent-primary)',
-                            color: 'var(--accent-primary)',
-                            padding: '1.4rem 4rem',
-                            borderRadius: '2px',
-                            fontWeight: '900',
-                            textTransform: 'uppercase',
-                            letterSpacing: '0.25em'
+                            padding: '1.2rem 3.5rem',
+                            borderRadius: '12px',
+                            fontWeight: 700,
+                            background: 'rgba(255, 255, 255, 0.4)',
+                            color: 'var(--text-primary)',
+                            fontSize: '0.9rem',
+                            textAlign: 'center',
+                            textDecoration: 'none',
+                            backdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255,255,255,0.2)'
                         }}
                     >
-                        Connect Link
+                        Get in Touch
                     </motion.a>
                 </div>
             </motion.div>
 
             <motion.div
-                className="scroll-indicator"
-                animate={{ y: [0, 20, 0] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                style={{ bottom: '4rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                style={{
+                    position: 'absolute',
+                    bottom: '3rem',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: '30px',
+                    height: '50px',
+                    borderRadius: '15px',
+                    border: '2px solid var(--text-secondary)',
+                    opacity: 0.3
+                }}
             >
-                <span style={{
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '0.55rem',
-                    color: 'var(--accent-primary)',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.4em',
-                    opacity: 0.7
-                }}>
-                    // SYNC_SCROLL_TO_DESCEND
-                </span>
-                <div style={{ width: '1px', height: '100px', background: 'linear-gradient(to bottom, var(--accent-primary), transparent)', opacity: 0.5 }} />
+                <div style={{
+                    width: '4px',
+                    height: '8px',
+                    background: 'var(--text-secondary)',
+                    borderRadius: '2px',
+                    margin: '8px auto'
+                }} />
             </motion.div>
         </div>
     );

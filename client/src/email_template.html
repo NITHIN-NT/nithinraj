@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Received | Nithin Raj</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Outfit', Helvetica, Arial, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+            color: #0f172a;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .email-wrapper {
+            width: 100%;
+            background-color: #f1f5f9;
+            padding: 40px 10px;
+        }
+        
+        .email-container {
+            max-width: 580px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .header {
+            background-color: #0f172a; /* Dark Slate Header */
+            padding: 32px 40px;
+            text-align: center;
+        }
+        
+        .logo-text {
+            color: #ffffff;
+            font-family: 'JetBrains Mono', Courier, monospace;
+            font-size: 14px;
+            letter-spacing: 0.2em;
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .content-body {
+            padding: 48px 40px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            background-color: #eff6ff;
+            color: #3b82f6;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            margin-bottom: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            text-transform: uppercase;
+        }
+        
+        h1 {
+            margin: 0 0 16px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f172a;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+        
+        p {
+            margin: 0 0 24px;
+            line-height: 1.7;
+            color: #475569; /* Slate 600 */
+            font-size: 16px;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background-color: #3b82f6; /* Blue 500 */
+            color: #ffffff !important;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+            letter-spacing: 0.02em;
+        }
+        
+        .cta-button:hover {
+            background-color: #2563eb;
+        }
+        
+        .footer {
+            background-color: #f8fafc;
+            padding: 32px 40px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+        }
+        
+        .social-links a {
+            display: inline-block;
+            margin: 0 12px;
+            color: #64748b;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'Outfit', sans-serif;
+        }
+        
+        .copyright {
+            margin-top: 24px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-wrapper">
+        <div class="email-container">
+            <!-- Dark Tech-Inspired Header -->
+            <div class="header">
+                <div class="logo-text">Nithin Raj // Portf.</div>
+            </div>
+            
+            <!-- Main Content Card -->
+            <div class="content-body">
+                <div class="status-badge">Status: Received</div>
+                <h1>Thanks for keeping in touch.</h1>
+                <p>Hi {{user_name}},</p>
+                <p>
+                    I've received your query through my portfolio. I'm currently reviewing new opportunities and technical collaborations.
+                </p>
+                <p>
+                    I aim to respond to all meaningful connections within 24 hours. In the meantime, you can check out my open-source work.
+                </p>
+                
+                <div style="margin-top: 32px; margin-bottom: 8px;">
+                    <a href="https://github.com/NITHIN-NT" class="cta-button">Browse GitHub Code</a>
+                </div>
+            </div>
+            
+            <!-- Minimal Footer -->
+            <div class="footer">
+                <div class="social-links">
+                    <a href="https://github.com/NITHIN-NT">GitHub</a>
+                    <a href="https://www.linkedin.com/in/nithin-raj-003a55365/">LinkedIn</a>
+                    <a href="https://instagram.com/nithnhh">Instagram</a>
+                </div>
+                <div class="copyright">
+                    &copy; 2026 Nithin Raj. All rights reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

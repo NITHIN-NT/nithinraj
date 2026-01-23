@@ -75,13 +75,13 @@
 
 /* Sections */
 section {
-  padding: 10rem 3rem;
+  padding: clamp(4rem, 10vw, 8rem) clamp(1.5rem, 5vw, 3rem);
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .section-title {
-  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-size: clamp(2rem, 8vw, 4rem);
   margin-bottom: 2rem;
   text-align: center;
 }
@@ -166,7 +166,7 @@ section {
   background: var(--bg-secondary);
   border: 1px solid var(--glass-border);
   border-radius: 8px;
-  color: white;
+  color: var(--text-primary);
   font-family: inherit;
   transition: border-color 0.3s ease;
 }

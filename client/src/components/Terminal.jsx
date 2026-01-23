@@ -16,248 +16,128 @@ const VFS = {
             "contact": {
                 type: "dir",
                 content: {
-                    "email.txt": { type: "file", content: "LINK_ESTABLISHED: nithin@example.com" },
-                    "github.sys": { type: "file", content: "SYSTEM_ID: NITHIN-NT" },
-                    "linkedin.sys": { type: "file", content: "NETWORK_SYNC: linkedin.com/in/nithin-nt" }
+                    "email.txt": { type: "file", content: "LINK_ESTABLISHED: nithinraj07sachu@gmail.com" },
+                    "phone.txt": { type: "file", content: "LINE_SYNC: +91 7306663523" },
+                    "github.sys": { type: "file", content: "SYSTEM_ID: github.com/NITHIN-NT" },
+                    "linkedin.sys": { type: "file", content: "NETWORK_SYNC: linkedin.com/in/nithin-raj-003a55365" },
+                    "instagram.sys": { type: "file", content: "SOCIAL_SYNC: instagram.com/nithnhh" }
                 }
             },
-            "bio.txt": { type: "file", content: "I am Nithin NT, a Senior Backend Architect specializing in high-performance digital infrastructures." },
-            "stack.txt": { type: "file", content: "TECH_STACK: [Python, Django, FastAPI, PostgreSQL, Docker, AWS, React]" },
-            "readme.md": { type: "file", content: "Welcome to NITHIN_OS v2.0.0. Use 'ls' to explore, 'cd' to navigate, and 'cat' to read files." }
+            "readme.md": { type: "file", content: "AETHER_OS v2.1.0 // Simple, Light, Performant." }
         }
     }
 };
 
 const ALIASES = {
-    about: "I am Nithin NT, a Senior Backend Architect specializing in high-performance digital infrastructures. I build resilient, scalable, and secure system architectures.",
-    stack: "CURRENT_STACK: [Python, Django, React, FastAPI, PostgreSQL, Docker, AWS]",
-    contact: "LINK_ESTABLISHED: [nithin@example.com] [GitHub: NITHIN-NT]",
-    location: "LOC_DATA: 11.0510° N, 76.0711° E // South India",
-    status: "SYSTEM_STATUS: [OPTIMIZED] [CORE_V2_ACTIVE]",
+    about: "Growing Backend Architect specializing in high-performance digital infrastructures.",
+    stack: "[Python, Django, FastAPI, PostgreSQL, Docker, MySQL]",
+    status: "CURRENT: [AETHER_READY] [DESIGN_OPTIMIZED]",
 };
 
 const Terminal = () => {
     const [history, setHistory] = useState([
-        { type: 'output', text: 'NITHIN_OS v2.0.0 // KERNEL_LOADED' },
-        { type: 'output', text: 'Type "help" for interactive manual or use shortcut commands (about, stack, etc.)' }
+        { type: 'output', text: 'AETHER_OS v2.1.0' },
+        { type: 'output', text: 'Type "help" to start exploration.' }
     ]);
-    const [path, setPath] = useState(["~"]);
+    const [path] = useState(["~"]);
     const [input, setInput] = useState('');
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const scrollRef = useRef(null);
     const dragControls = useDragControls();
 
     useEffect(() => {
-        if (scrollRef.current) {
-            scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-        }
+        if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }, [history]);
-
-    const getCurrentDir = (currentPath) => {
-        let current = VFS;
-        for (const segment of currentPath) {
-            if (current[segment] && current[segment].type === 'dir') {
-                current = current[segment].content;
-            } else {
-                return null;
-            }
-        }
-        return current;
-    };
 
     const handleCommand = (e) => {
         if (e.key === 'Enter') {
             const fullCommand = input.trim();
-            const [cmd, ...args] = fullCommand.toLowerCase().split(' ');
+            const [cmd] = fullCommand.toLowerCase().split(' ');
             const newHistory = [...history, { type: 'input', text: input, path: path.join('/') }];
 
-            if (cmd === 'clear') {
-                setHistory([{ type: 'output', text: 'TERMINAL_CLEARED' }]);
-            } else if (cmd === 'help') {
-                newHistory.push({ type: 'output', text: "SYSTEM_COMMANDS: [ls, cd, pwd, cat, help, clear, exit]" });
-                newHistory.push({ type: 'output', text: "BIO_SHORTCUTS: [about, stack, contact, location, status]" });
+            if (cmd === 'clear') setHistory([{ type: 'output', text: 'TERMINAL_CLEARED' }]);
+            else if (cmd === 'help') {
+                newHistory.push({ type: 'output', text: "SYS: [ls, cd, pwd, cat, clear, exit] // ALIAS: [about, stack, status]" });
                 setHistory(newHistory);
             } else if (ALIASES[cmd]) {
                 newHistory.push({ type: 'output', text: ALIASES[cmd] });
                 setHistory(newHistory);
-            } else if (cmd === 'pwd') {
-                newHistory.push({ type: 'output', text: '/' + path.join('/') });
-                setHistory(newHistory);
             } else if (cmd === 'ls') {
-                const currentDir = getCurrentDir(path);
-                const items = Object.keys(currentDir).map(name => {
-                    const isDir = currentDir[name].type === 'dir';
-                    return isDir ? `${name}/` : name;
-                });
-                newHistory.push({ type: 'output', text: items.join('    ') });
+                const current = path.reduce((acc, curr) => acc[curr].content, VFS);
+                newHistory.push({ type: 'output', text: Object.keys(current).join('    ') });
                 setHistory(newHistory);
-            } else if (cmd === 'cd') {
-                const target = args[0];
-                if (!target || target === '~') {
-                    setPath(["~"]);
-                } else if (target === '..') {
-                    if (path.length > 1) {
-                        setPath(path.slice(0, -1));
-                    }
-                } else {
-                    const currentDir = getCurrentDir(path);
-                    if (currentDir[target] && currentDir[target].type === 'dir') {
-                        setPath([...path, target]);
-                    } else {
-                        newHistory.push({ type: 'output', text: `cd: no such directory: ${target}` });
-                    }
-                }
+            } else if (cmd === 'exit') setIsOpen(false);
+            else if (cmd !== '') {
+                newHistory.push({ type: 'output', text: `command not found: ${cmd}` });
                 setHistory(newHistory);
-            } else if (cmd === 'cat') {
-                const target = args[0];
-                if (!target) {
-                    newHistory.push({ type: 'output', text: "cat: missing operand" });
-                } else {
-                    const currentDir = getCurrentDir(path);
-                    if (currentDir[target] && currentDir[target].type === 'file') {
-                        newHistory.push({ type: 'output', text: currentDir[target].content });
-                    } else if (currentDir[target] && currentDir[target].type === 'dir') {
-                        newHistory.push({ type: 'output', text: `cat: ${target}: Is a directory` });
-                    } else {
-                        newHistory.push({ type: 'output', text: `cat: ${target}: No such file` });
-                    }
-                }
-                setHistory(newHistory);
-            } else if (cmd === 'exit') {
-                setIsOpen(false);
-            } else if (cmd !== '') {
-                newHistory.push({ type: 'output', text: `command not found: ${cmd}. Type "help" for options.` });
-                setHistory(newHistory);
-            } else {
-                setHistory(newHistory);
-            }
+            } else setHistory(newHistory);
             setInput('');
         }
     };
 
     if (!isOpen) return (
         <motion.div
+            onClick={() => setIsOpen(true)}
+            whileHover={{ scale: 1.1, backgroundColor: 'var(--accent-primary)', color: '#fff' }}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            onClick={() => setIsOpen(true)}
             style={{
-                position: 'fixed',
-                bottom: '2rem',
-                right: '2rem',
-                width: '50px',
-                height: '50px',
-                background: 'var(--accent-primary)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                zIndex: 9999,
-                boxShadow: '0 0 20px rgba(16, 185, 129, 0.4)'
+                position: 'fixed', bottom: '2.5rem', right: '2.5rem', width: '60px', height: '60px',
+                background: '#fff', borderRadius: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                cursor: 'pointer', zIndex: 9999, boxShadow: '0 20px 40px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.05)',
+                color: 'var(--accent-primary)', transition: 'all 0.3s ease'
             }}
         >
-            <span style={{ color: '#000', fontSize: '1.2rem', fontWeight: 'bold' }}>&gt;_</span>
+            <span style={{ fontSize: '1.5rem', fontWeight: 900, fontFamily: 'var(--font-mono)' }}>&gt;_</span>
         </motion.div>
     );
 
     return (
         <motion.div
-            drag
-            dragControls={dragControls}
-            dragListener={false}
-            dragMomentum={false}
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            style={{
-                position: 'fixed',
-                bottom: '2rem',
-                right: '2rem',
-                width: '500px',
-                zIndex: 9999,
-            }}
+            drag dragControls={dragControls} dragListener={false} dragMomentum={false}
+            initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+            style={{ position: 'fixed', bottom: '2.5rem', right: '2.5rem', width: '450px', zIndex: 9999 }}
         >
             <div className="glass" style={{
-                background: 'rgba(2, 2, 2, 0.95)',
-                border: '1px solid var(--glass-border)',
-                borderRadius: '8px',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '0.8rem',
-                overflow: 'hidden',
-                display: 'flex',
-                flexDirection: 'column',
-                height: '380px',
-                boxShadow: '0 30px 60px rgba(0,0,0,0.8)',
-                backdropFilter: 'blur(20px)'
+                background: 'rgba(255, 255, 255, 0.95)', border: '1px solid rgba(0,0,0,0.05)', borderRadius: '16px',
+                fontFamily: 'var(--font-mono)', fontSize: '0.75rem', overflow: 'hidden', display: 'flex',
+                flexDirection: 'column', height: '340px', boxShadow: '0 25px 50px rgba(0,0,0,0.1)'
             }}>
-                {/* Terminal Header */}
                 <div
                     onPointerDown={(e) => dragControls.start(e)}
                     style={{
-                        background: 'rgba(16, 185, 129, 0.15)',
-                        padding: '0.7rem 1rem',
-                        borderBottom: '1px solid var(--glass-border)',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        cursor: 'grab'
+                        background: 'rgba(59, 130, 246, 0.05)', padding: '0.8rem 1.2rem', borderBottom: '1px solid rgba(0,0,0,0.03)',
+                        display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'grab'
                     }}
                 >
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <div onClick={() => setIsOpen(false)} style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56', cursor: 'pointer' }} />
-                        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e' }} />
-                        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }} />
+                    <div style={{ display: 'flex', gap: '0.6rem' }}>
+                        <div onClick={() => setIsOpen(false)} style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56', cursor: 'pointer', opacity: 0.8 }} />
+                        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e', opacity: 0.8 }} />
+                        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f', opacity: 0.8 }} />
                     </div>
-                    <span style={{ fontSize: '0.6rem', opacity: 0.6, letterSpacing: '0.15em', fontWeight: 'bold' }}>NITHIN_OS // HYBRID_SHELL</span>
+                    <span style={{ fontSize: '0.6rem', color: 'var(--text-secondary)', fontWeight: 700 }}>AETHER_SHELL</span>
                 </div>
 
-                {/* Terminal Body */}
                 <div
                     ref={scrollRef}
                     style={{
-                        padding: '1.2rem',
-                        flex: 1,
-                        overflowY: 'auto',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '0.4rem',
-                        background: 'rgba(0,0,0,0.3)'
+                        padding: '1.5rem', flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem'
                     }}
                 >
                     {history.map((line, i) => (
-                        <div key={i} style={{ lineHeight: 1.5 }}>
-                            {line.type === 'input' ? (
-                                <div>
-                                    <span style={{ color: 'var(--accent-primary)', opacity: 0.5 }}>[{line.path}]</span>
-                                    <span style={{ color: 'var(--accent-primary)', margin: '0 0.5rem' }}>$</span>
-                                    <span style={{ color: '#fff' }}>{line.text}</span>
-                                </div>
-                            ) : (
-                                <div style={{ color: 'var(--accent-primary)' }}>{line.text}</div>
-                            )}
+                        <div key={i} style={{ color: line.type === 'input' ? 'var(--text-primary)' : 'var(--accent-primary)', fontWeight: 500 }}>
+                            {line.type === 'input' && <span style={{ opacity: 0.3, marginRight: '0.5rem' }}>$</span>}
+                            {line.text}
                         </div>
                     ))}
                 </div>
 
-                {/* Terminal Input */}
-                <div style={{ padding: '0.8rem 1.2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderTop: '1px solid rgba(16, 185, 129, 0.1)' }}>
-                    <span style={{ color: 'var(--accent-primary)', opacity: 0.5 }}>[{path.join('/')}]</span>
-                    <span style={{ color: 'var(--accent-primary)' }}>$</span>
+                <div style={{ padding: '0.8rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', borderTop: '1px solid rgba(0,0,0,0.03)' }}>
+                    <span style={{ color: 'var(--accent-primary)', fontWeight: 800 }}>$</span>
                     <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={handleCommand}
-                        autoFocus
-                        spellCheck="false"
-                        style={{
-                            background: 'transparent',
-                            border: 'none',
-                            outline: 'none',
-                            color: '#fff',
-                            fontFamily: 'inherit',
-                            fontSize: 'inherit',
-                            flex: 1
-                        }}
+                        type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleCommand}
+                        autoFocus spellCheck="false"
+                        style={{ background: 'transparent', border: 'none', outline: 'none', color: 'var(--text-primary)', fontFamily: 'inherit', fontSize: 'inherit', flex: 1 }}
                     />
                 </div>
             </div>
