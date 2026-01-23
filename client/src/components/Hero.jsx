@@ -149,7 +149,7 @@ const Hero = () => {
                 }}>
                     <motion.a
                         whileHover={{ y: -5, boxShadow: '0 20px 40px rgba(59, 130, 246, 0.15)' }}
-                        href="#work"
+                        href="#projects"
                         style={{
                             padding: '1.2rem 3.5rem',
                             borderRadius: '12px',

@@ -19,7 +19,7 @@ const Navbar = () => {
         };
     }, []);
 
-    const navLinks = ['home', 'projects', 'work', 'about', 'stats', 'contact'];
+    const navLinks = ['home', 'projects', 'about', 'stats', 'contact'];
 
     return (
         <>
