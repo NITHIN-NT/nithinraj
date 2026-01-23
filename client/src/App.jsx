@@ -11,6 +11,7 @@ import Terminal from './components/Terminal';
 import BackgroundElements from './components/BackgroundElements';
 import { AnimatePresence } from 'framer-motion';
 import Lenis from 'lenis';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import './App.css';
 
 const About = () => (
@@ -91,6 +92,7 @@ function App() {
           <footer style={{ padding: '4rem 3rem', textAlign: 'center', borderTop: '1px solid var(--glass-border)', color: 'var(--text-secondary)', fontSize: '0.65rem', fontFamily: 'var(--font-mono)', letterSpacing: '0.2em' }}>
             [ SYSTEM_END // © {new Date().getFullYear()} NITHIN NT // DESIGNED BY DHILSHAN KALAYATH UNDER THE SUPERVISION OF NITHIN ]
           </footer>
+          <SpeedInsights />
         </div>
       )}
     </div>
