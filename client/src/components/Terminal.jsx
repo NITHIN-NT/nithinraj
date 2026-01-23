@@ -36,12 +36,12 @@ const ALIASES = {
 
 const Terminal = () => {
     const [history, setHistory] = useState([
-        { type: 'output', text: 'AETHER_OS v2.1.0' },
-        { type: 'output', text: 'Type "help" to start exploration.' }
+        { type: 'output', text: 'AETHER_OS v2.1.0' }
     ]);
     const [path] = useState(["~"]);
     const [input, setInput] = useState('');
     const [isOpen, setIsOpen] = useState(false);
+    const [isWelcomePlayed, setIsWelcomePlayed] = useState(false);
     const scrollRef = useRef(null);
     const dragControls = useDragControls();
 
@@ -49,28 +49,74 @@ const Terminal = () => {
         if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }, [history]);
 
-    const handleCommand = (e) => {
-        if (e.key === 'Enter') {
-            const fullCommand = input.trim();
-            const [cmd] = fullCommand.toLowerCase().split(' ');
-            const newHistory = [...history, { type: 'input', text: input, path: path.join('/') }];
+    useEffect(() => {
+        if (isOpen && !isWelcomePlayed) {
+            setIsWelcomePlayed(true);
+            const runSequence = async () => {
+                setHistory([]);
 
-            if (cmd === 'clear') setHistory([{ type: 'output', text: 'TERMINAL_CLEARED' }]);
-            else if (cmd === 'help') {
-                newHistory.push({ type: 'output', text: "SYS: [ls, cd, pwd, cat, clear, exit] // ALIAS: [about, stack, status]" });
-                setHistory(newHistory);
+                const lines = [
+                    "Initializing AETHER_SHELL...",
+                    "Loading system modules...",
+                    "> SYSTEM_READY",
+                    "Type 'help' to see available commands."
+                ];
+
+                for (const line of lines) {
+                    setHistory(prev => [...prev, { type: 'output', text: '' }]);
+
+                    for (let i = 0; i <= line.length; i++) {
+                        await new Promise(resolve => setTimeout(resolve, 30));
+                        setHistory(prev => {
+                            const next = [...prev];
+                            next[next.length - 1] = { ...next[next.length - 1], text: line.substring(0, i) };
+                            return next;
+                        });
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 150));
+                }
+            };
+            runSequence();
+        }
+    }, [isOpen, isWelcomePlayed]);
+
+    const processCommand = (cmdInput) => {
+        const fullCommand = cmdInput.trim();
+        if (!fullCommand) return;
+
+        const [cmd] = fullCommand.toLowerCase().split(' ');
+
+        setHistory(prev => {
+            const newHistory = [...prev, { type: 'input', text: cmdInput, path: path.join('/') }];
+
+            if (cmd === 'clear') {
+                return [{ type: 'output', text: 'TERMINAL_CLEARED' }];
+            }
+
+            if (cmd === 'help') {
+                return [
+                    ...newHistory,
+                    { type: 'output', text: "Available System Commands:" },
+                    { type: 'output', text: "ls, cd, pwd, cat, clear, exit" },
+                    { type: 'output', text: "Aliases: about, projects, contact, status" }
+                ];
             } else if (ALIASES[cmd]) {
-                newHistory.push({ type: 'output', text: ALIASES[cmd] });
-                setHistory(newHistory);
+                return [...newHistory, { type: 'output', text: ALIASES[cmd] }];
             } else if (cmd === 'ls') {
                 const current = path.reduce((acc, curr) => acc[curr].content, VFS);
-                newHistory.push({ type: 'output', text: Object.keys(current).join('    ') });
-                setHistory(newHistory);
-            } else if (cmd === 'exit') setIsOpen(false);
-            else if (cmd !== '') {
-                newHistory.push({ type: 'output', text: `command not found: ${cmd}` });
-                setHistory(newHistory);
-            } else setHistory(newHistory);
+                return [...newHistory, { type: 'output', text: Object.keys(current).join('    ') }];
+            } else if (cmd === 'exit') {
+                setIsOpen(false);
+                return newHistory;
+            } else {
+                return [...newHistory, { type: 'output', text: `command not found: ${cmd}` }];
+            }
+        });
+    };
+
+    const handleCommand = (e) => {
+        if (e.key === 'Enter') {
+            processCommand(input);
             setInput('');
         }
     };
