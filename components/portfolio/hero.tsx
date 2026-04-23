@@ -52,7 +52,7 @@ export function Hero() {
         >
           <div className="flex items-center gap-8 text-sm text-black/50">
             <span>Malappuram, India</span>
-            <span>2007 Model</span>
+            <span>since 2007</span>
           </div>
           
           <a 
