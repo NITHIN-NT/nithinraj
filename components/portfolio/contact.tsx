@@ -32,14 +32,14 @@ export function Contact() {
 
   return (
     <section className="py-24 px-6 md:px-12 lg:px-24 border-t border-black/10">
-      <div className="max-w-3xl">
+      <div className="max-w-6xl">
         <ScrollReveal>
           <h2 className="text-xs tracking-widest uppercase mb-12 text-black/40">
             Contact
           </h2>
         </ScrollReveal>
         
-        <StaggerChildren className="space-y-6" staggerDelay={0.1}>
+        <StaggerChildren className="grid grid-cols-1 md:grid-cols-2 gap-8" staggerDelay={0.1}>
           {contactItems.map((item, index) => (
             <StaggerItem key={index}>
               {item.type === "text" ? (

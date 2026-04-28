@@ -34,14 +34,14 @@ export function Skills() {
 
   return (
     <section className="py-24 px-6 md:px-12 lg:px-24 border-t border-black/10">
-      <div className="max-w-4xl">
+      <div className="max-w-6xl">
         <ScrollReveal>
           <h2 className="text-xs tracking-widest uppercase mb-16 text-black/40">
             Skills
           </h2>
         </ScrollReveal>
         
-        <div className="space-y-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Primary Stack */}
           <div>
             <ScrollReveal delay={0.1}>
