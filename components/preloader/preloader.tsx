@@ -42,11 +42,11 @@ export function Preloader() {
   const curve = {
     initial: {
       d: initialPath,
-      transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] as [number, number, number, number] }
+      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] }
     },
     exit: {
       d: targetPath,
-      transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] as [number, number, number, number], delay: 0.3 }
+      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1], delay: 0.3 }
     }
   }
 
@@ -56,7 +56,7 @@ export function Preloader() {
     },
     exit: {
       y: "-100vh",
-      transition: { duration: 0.8, ease: [0.76, 0, 0.24, 1] as [number, number, number, number], delay: 0.2 }
+      transition: { duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.2 }
     }
   }
 
@@ -65,7 +65,7 @@ export function Preloader() {
       variants={slideUp}
       initial="initial"
       exit="exit"
-      className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-[99] bg-[#f4f4f5]"
+      className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-[999] bg-[#09090b]"
     >
       {dimension.width > 0 && (
         <>
@@ -74,20 +74,23 @@ export function Preloader() {
               variants={curve}
               initial="initial"
               exit="exit"
-              fill="#f4f4f5"
-              style={{ filter: 'drop-shadow(0 20px 30px rgba(0,0,0,0.15))' }}
+              fill="#09090b"
             ></motion.path>
           </svg>
           <AnimatePresence mode="wait">
             <motion.p
               key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="relative z-[1] text-[#18181b] text-5xl md:text-6xl font-medium tracking-tight"
+              initial={{ opacity: 0, filter: "blur(10px)", y: 20 }}
+              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+              exit={{ opacity: 0, filter: "blur(10px)", y: -20 }}
+              transition={{ duration: 0.5, ease: [0.21, 0.47, 0.32, 0.98] }}
+              className="relative z-[1] text-white text-4xl md:text-6xl font-light tracking-[0.2em] uppercase"
             >
-              {words[index]}
+              <span className="flex items-center gap-4">
+                <span className="w-8 h-px bg-white/20" />
+                {words[index]}
+                <span className="w-8 h-px bg-white/20" />
+              </span>
             </motion.p>
           </AnimatePresence>
         </>

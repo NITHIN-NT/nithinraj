@@ -27,16 +27,18 @@ export function ScrollReveal({
     <motion.div
       initial={{ 
         opacity: 0, 
+        filter: "blur(10px)",
         ...directions[direction]
       }}
       whileInView={{ 
         opacity: 1, 
+        filter: "blur(0px)",
         x: 0, 
         y: 0 
       }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ 
-        duration: 0.7, 
+        duration: 0.8, 
         delay,
         ease: [0.21, 0.47, 0.32, 0.98]
       }}
@@ -61,11 +63,11 @@ export function TextReveal({ children, className = "", delay = 0 }: TextRevealPr
       {words.map((word, index) => (
         <motion.span
           key={index}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, filter: "blur(5px)", y: 10 }}
+          whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{
-            duration: 0.5,
+            duration: 0.6,
             delay: delay + index * 0.05,
             ease: [0.21, 0.47, 0.32, 0.98]
           }}
@@ -92,12 +94,12 @@ export function CharacterReveal({ children, className = "", delay = 0 }: Charact
       {characters.map((char, index) => (
         <motion.span
           key={index}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, filter: "blur(5px)", y: 15 }}
+          whileInView={{ opacity: 1, filter: "blur(0px)", y: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{
-            duration: 0.4,
-            delay: delay + index * 0.03,
+            duration: 0.5,
+            delay: delay + index * 0.02,
             ease: [0.21, 0.47, 0.32, 0.98]
           }}
           className="inline-block"

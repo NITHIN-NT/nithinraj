@@ -33,30 +33,25 @@ export function Skills() {
   ]
 
   return (
-    <section className="py-24 px-6 md:px-12 lg:px-24 border-t border-black/10">
-      <div className="max-w-6xl">
+    <section id="skills" className="py-32 px-6 md:px-12 lg:px-24 bg-background relative overflow-hidden">
+      <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-primary/2 rounded-full blur-[120px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+      
+      <div className="max-w-6xl mx-auto relative z-10">
         <ScrollReveal>
-          <h2 className="text-xs tracking-widest uppercase mb-16 text-black/40">
-            Skills
+          <h2 className="text-[10px] md:text-xs tracking-[0.4em] uppercase mb-20 text-foreground/40 font-bold">
+            Technical Arsenal
           </h2>
         </ScrollReveal>
         
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
           {/* Primary Stack */}
           <div>
             <ScrollReveal delay={0.1}>
-              <h3 className="text-sm font-medium mb-6 text-black/50">Primary Stack</h3>
+              <h3 className="text-xl font-medium mb-8 text-foreground tracking-tight">Core Development</h3>
             </ScrollReveal>
-            <StaggerChildren className="flex flex-wrap gap-3" staggerDelay={0.08}>
+            <StaggerChildren className="grid grid-cols-2 gap-4" staggerDelay={0.08}>
               {primaryStack.map((skill) => (
-                <StaggerItem key={skill.name}>
-                  <div 
-                    className="group flex items-center gap-3 px-5 py-3 border border-black/10 rounded-full hover:border-black hover:bg-black hover:text-white transition-all duration-300 cursor-default"
-                  >
-                    <skill.icon className="w-5 h-5 group-hover:text-white transition-colors" />
-                    <span className="text-sm font-medium">{skill.name}</span>
-                  </div>
-                </StaggerItem>
+                <SkillCard key={skill.name} skill={skill} />
               ))}
             </StaggerChildren>
           </div>
@@ -64,23 +59,37 @@ export function Skills() {
           {/* Infrastructure & Tools */}
           <div>
             <ScrollReveal delay={0.2}>
-              <h3 className="text-sm font-medium mb-6 text-black/50">Infrastructure & Tools</h3>
+              <h3 className="text-xl font-medium mb-8 text-foreground tracking-tight">Infrastructure & Deployment</h3>
             </ScrollReveal>
-            <StaggerChildren className="flex flex-wrap gap-3" staggerDelay={0.06}>
+            <StaggerChildren className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-2 gap-4" staggerDelay={0.06}>
               {infrastructure.map((skill) => (
-                <StaggerItem key={skill.name}>
-                  <div 
-                    className="group flex items-center gap-3 px-5 py-3 border border-black/10 rounded-full hover:border-black hover:bg-black hover:text-white transition-all duration-300 cursor-default"
-                  >
-                    <skill.icon className="w-5 h-5 group-hover:text-white transition-colors" />
-                    <span className="text-sm font-medium">{skill.name}</span>
-                  </div>
-                </StaggerItem>
+                <SkillCard key={skill.name} skill={skill} />
               ))}
             </StaggerChildren>
           </div>
         </div>
       </div>
     </section>
+  )
+}
+
+interface SkillCardProps {
+  skill: {
+    name: string
+    icon: React.ComponentType<{ className?: string }>
+  }
+}
+
+function SkillCard({ skill }: SkillCardProps) {
+  return (
+    <StaggerItem>
+      <div 
+        className="group relative flex items-center gap-4 px-6 py-4 glass dark:glass-dark rounded-2xl transition-all duration-500 cursor-default overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <skill.icon className="w-6 h-6 text-foreground/40 group-hover:text-foreground transition-all duration-500 group-hover:scale-110 z-10" />
+        <span className="text-sm font-medium tracking-tight text-foreground/60 group-hover:text-foreground transition-colors z-10">{skill.name}</span>
+      </div>
+    </StaggerItem>
   )
 }
